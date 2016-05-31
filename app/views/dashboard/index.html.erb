@@ -2,4 +2,11 @@
 
 <p>
   Welcome, <%= current_user.first_name %>!
+
+  <%= link_to "Edit Account Settings", edit_user_path %>
+
+  <%= link_to "View My Account", user_path %>
+
+  <%= link_to('Logout', destroy_user_session_path, :method => :delete) %>
+
 </p>

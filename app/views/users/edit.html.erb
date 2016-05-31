@@ -1,0 +1,76 @@
+<%= form_for current_user do |f| %>
+
+<h3>Name</h3>
+
+  <div class="field">
+    <%= f.label :prefix %><br />
+    <%= f.text_field :prefix, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :first_name %><br />
+    <%= f.text_field :first_name, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :middle_initial %><br />
+    <%= f.text_field :middle_initial, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :last_name %><br />
+    <%= f.text_field :last_name, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :suffix %><br />
+    <%= f.text_field :suffix, autofocus: true %>
+  </div>
+
+<h3>Contact</h3>
+
+  <div class="field">
+    <%= f.label :phone_number %><br />
+    <%= f.text_field :phone_number, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :website_url %><br />
+    <%= f.text_field :website_url, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :address_line_1 %><br />
+    <%= f.text_field :address_line_1, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :address_line_2 %><br />
+    <%= f.text_field :address_line_2, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :city %><br />
+    <%= f.text_field :city, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :state %><br />
+    <%= f.text_field :state, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :country %><br />
+    <%= f.text_field :country, autofocus: true %>
+  </div>
+
+  <div class="field">
+    <%= f.label :zip_code %><br />
+    <%= f.text_field :zip_code, autofocus: true %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Update" %>
+  </div>
+
+<% end %>
