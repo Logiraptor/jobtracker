@@ -1,110 +1,37 @@
-<h1>My Account</h1>
 
-<table>
-  <tbody>
-    <tr>
-      <td>
-         PREFIX
-      </td>
-      <td>
-        <%= current_user.prefix %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         FIRST_NAME
-      </td>
-      <td>
-        <%= current_user.first_name %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         MIDDLE_INITIAL
-      </td>
-      <td>
-        <%= current_user.middle_initial %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         LAST_NAME
-      </td>
-      <td>
-        <%= current_user.last_name %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         SUFFIX
-      </td>
-      <td>
-        <%= current_user.suffix %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         PHONE_NUMBER
-      </td>
-      <td>
-        <%= current_user.phone_number %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         WEBSITE_URL
-      </td>
-      <td>
-        <%= current_user.website_url %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         ADDRESS_LINE_1
-      </td>
-      <td>
-        <%= current_user.address_line_1 %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         ADDRESS_LINE_2
-      </td>
-      <td>
-        <%= current_user.address_line_2 %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         CITY
-      </td>
-      <td>
-        <%= current_user.city %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         STATE
-      </td>
-      <td>
-        <%= current_user.state %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         COUNTRY
-      </td>
-      <td>
-        <%= current_user.country %>
-      </td>
-    </tr>
-    <tr>
-      <td>
-         ZIP_CODE
-      </td>
-      <td>
-        <%= current_user.zip_code %>
-      </td>
-    </tr>
-  </tbody>
-</table>
+
+<div class="container">
+  <div class="page-header">
+    <h1>My Account</h1>
+  </div>
+    
+  <table class="table">
+    <tbody>
+      <tr>
+        <td>Name</td>
+        <td><%= current_user.full_name %></td>
+      </tr>
+      <tr>
+        <td>Phone Number</td>
+        <td><%= current_user.phone_number %></td>
+      </tr>
+      <tr>
+        <td>Website URL</td>
+        <td><%= current_user.website_url %></td>
+      </tr>
+      <tr>
+        <td>Address</td>
+        <td>
+          <%= current_user.address_line_1 %> <br>
+          <%= current_user.address_line_2 %> <br>
+          <%= current_user.city %>,
+          <%= current_user.state %> <br>
+          <%= current_user.country %>
+          <%= current_user.zip_code %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+

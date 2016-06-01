@@ -16,30 +16,45 @@
  @import "bootstrap";
 
 
-.giant-header {
-	font-size: 36px;
-	text-align: center;
-}
+$base-color: #FAFAFA;
+$primary-color: #4CAF50;
 
-.slogan {
-	font-size: 24px;
-	text-align: center;
-}
+// body {
+// 	background-color: $base-color;
+// }
 
-.content {
-	display: flex;
-	flex-direction: row;
-}
+// .giant-header {
+// 	font-size: 36px;
+// 	text-align: center;
+// }
 
-.panel {
-	padding: 16px;
-}
+// .slogan {
+// 	font-size: 24px;
+// 	text-align: center;
+// }
 
-.thin {
-	flex: 1;
-	background-color: #ccc;
-}
+// .content {
+// 	display: flex;
+// 	flex-direction: row;
+// }
 
-.wide {
-	flex: 3;
-}
+// .card-center {
+// 	width: 400px;
+// 	margin: auto;
+// 	border-radius: 3px;
+// 	background-color: #FFF;
+// 	padding: 24px;
+
+// 	.field input, .field label {
+// 		width: 100%;
+// 	}
+// }
+
+// .navbar {
+// 	height: 50px;
+// 	background-color: $primary-color;
+// }
+
+// h1.logo {
+// 	font-size: 30px;
+// }
