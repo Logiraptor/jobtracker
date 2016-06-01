@@ -1,70 +1,74 @@
 
 
-<div class="container">
-  <div class="page-header">
-    <h1>Edit My Account</h1>
+
+<div class="page-header">
+  <h1>Edit My Account</h1>
+</div>
+
+<%= form_for current_user, html: {class: "form"} do |f| %>
+
+  <h3>Name</h3>
+
+  <!-- <div class="row"> -->
+    <div class="form-group">
+      <%= f.text_field :prefix, class: 'form-control col-xs-1', placeholder: 'Prefix', autofocus: true %>
+      <%= f.text_field :first_name, class: 'form-control col-xs-3', placeholder: 'First' %>
+      <%= f.text_field :middle_initial, class: 'form-control col-xs-1', placeholder: 'MI' %>
+      <%= f.text_field :last_name, class: 'form-control col-xs-3', placeholder: 'Last' %>
+      <%= f.text_field :suffix, class: 'form-control col-xs-1', placeholder: 'Suffix' %>
+    </div>
+  <!-- </div> -->
+
+  <h3>Contact</h3>
+
+
+  <div class="form-group">
+    <%= f.label :website_url %><br />
+    <%= f.text_field :website_url, class: 'form-control' %>
   </div>
 
-  <%= form_for current_user, html: {class: "form"} do |f| %>
+  <%= fields_for :address, current_user.address do |f| %>
 
-    <h3>Name</h3>
 
-    <!-- <div class="row"> -->
-      <div class="form-group">
-        <%= f.text_field :prefix, class: 'form-control col-xs-1', placeholder: 'Prefix', autofocus: true %>
-        <%= f.text_field :first_name, class: 'form-control col-xs-3', placeholder: 'First' %>
-        <%= f.text_field :middle_initial, class: 'form-control col-xs-1', placeholder: 'MI' %>
-        <%= f.text_field :last_name, class: 'form-control col-xs-3', placeholder: 'Last' %>
-        <%= f.text_field :suffix, class: 'form-control col-xs-1', placeholder: 'Suffix' %>
-      </div>
-    <!-- </div> -->
+  <div class="form-group">
+    <%= f.label :phone_number %><br />
+    <%= f.text_field :phone_number, class: 'form-control' %>
+  </div>
 
-    <h3>Contact</h3>
+  <div class="form-group">
+    <%= f.label :address_line_1 %><br />
+    <%= f.text_field :address_line_1, class: 'form-control' %>
+  </div>
 
-    <div class="form-group">
-      <%= f.label :phone_number %><br />
-      <%= f.text_field :phone_number, class: 'form-control' %>
-    </div>
+  <div class="form-group">
+    <%= f.label :address_line_2 %><br />
+    <%= f.text_field :address_line_2, class: 'form-control' %>
+  </div>
 
-    <div class="form-group">
-      <%= f.label :website_url %><br />
-      <%= f.text_field :website_url, class: 'form-control' %>
-    </div>
+  <div class="form-group">
+    <%= f.label :city %><br />
+    <%= f.text_field :city, class: 'form-control' %>
+  </div>
 
-    <div class="form-group">
-      <%= f.label :address_line_1 %><br />
-      <%= f.text_field :address_line_1, class: 'form-control' %>
-    </div>
+  <div class="form-group">
+    <%= f.label :state %><br />
+    <%= f.text_field :state, class: 'form-control' %>
+  </div>
 
-    <div class="form-group">
-      <%= f.label :address_line_2 %><br />
-      <%= f.text_field :address_line_2, class: 'form-control' %>
-    </div>
+  <div class="form-group">
+    <%= f.label :country %><br />
+    <%= f.text_field :country, class: 'form-control' %>
+  </div>
 
-    <div class="form-group">
-      <%= f.label :city %><br />
-      <%= f.text_field :city, class: 'form-control' %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :state %><br />
-      <%= f.text_field :state, class: 'form-control' %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :country %><br />
-      <%= f.text_field :country, class: 'form-control' %>
-    </div>
-
-    <div class="form-group">
-      <%= f.label :zip_code %><br />
-      <%= f.text_field :zip_code, class: 'form-control' %>
-    </div>
-
-    <div class="actions">
-      <%= f.submit "Update", class: "btn btn-default" %>
-    </div>
-
+  <div class="form-group">
+    <%= f.label :zip_code %><br />
+    <%= f.text_field :zip_code, class: 'form-control' %>
+  </div>
+  
   <% end %>
 
-</div>
+  <div class="actions">
+    <%= f.submit "Update", class: "btn btn-default" %>
+  </div>
+
+<% end %>

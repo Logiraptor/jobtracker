@@ -1,14 +1,10 @@
 class UsersController < ApplicationController
+  include Address::Params
   before_action :authenticate_user!
-  
-  def show
-  end
-
-  def edit
-  end
 
   def update
     current_user.update!(**user_params)
+    current_user.address.update!(**address_params)
     redirect_to current_user
   end
 
@@ -21,14 +17,7 @@ class UsersController < ApplicationController
       :prefix,
       :suffix,
       :middle_initial,
-      :phone_number,
       :website_url,
-      :address_line_1,
-      :address_line_2,
-      :city,
-      :state,
-      :country,
-      :zip_code
     ).symbolize_keys
   end
 end

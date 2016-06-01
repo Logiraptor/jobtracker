@@ -1,0 +1,116 @@
+<%= form_for(@job_profile) do |f| %>
+  <% if @job_profile.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@job_profile.errors.count, "error") %> prohibited this job_profile from being saved:</h2>
+
+      <ul>
+      <% @job_profile.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :employer_name %>
+    <%= f.text_field :employer_name, class: "form-control" %>
+  </div>
+
+  <%= fields_for :address, @job_profile.address do |f| %>
+
+  <div class="form-group">
+    <%= f.label :phone_number %><br />
+    <%= f.text_field :phone_number, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :address_line_1 %><br />
+    <%= f.text_field :address_line_1, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :address_line_2 %><br />
+    <%= f.text_field :address_line_2, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :city %><br />
+    <%= f.text_field :city, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :state %><br />
+    <%= f.text_field :state, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :country %><br />
+    <%= f.text_field :country, class: 'form-control' %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :zip_code %><br />
+    <%= f.text_field :zip_code, class: 'form-control' %>
+  </div>
+  
+  <% end %>
+
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :start_date %>
+    <%= f.text_field :start_date, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :end_date %>
+    <%= f.text_field :end_date, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :salary %>
+    <%= f.text_field :salary, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :salary_type %>
+    <%= f.text_field :salary_type, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :average_weekly_hours %>
+    <%= f.text_field :average_weekly_hours, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :supervisor_name %>
+    <%= f.text_field :supervisor_name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :supervisor_phone %>
+    <%= f.text_field :supervisor_phone, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :skills %>
+    <%= react_component 'MultiForm', name: 'skills[name][]', values: @job_profile.skills, attrs: {className: 'form-control'} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :accomplishments %>
+    <%= react_component 'MultiForm', name: 'accomplishments[name][]', values: @job_profile.accomplishments, attrs: {className: 'form-control'} %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :duties %>
+    <%= react_component 'MultiForm', name: 'duties[name][]', values: @job_profile.duties, attrs: {className: 'form-control'} %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit "Submit", class: "btn btn-default" %>
+  </div>
+<% end %>

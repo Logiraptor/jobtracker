@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
   devise_scope :user do
     resource :user, only: [:show, :edit, :update]
+    get '/profile' => 'profile#show'
+    resources :job_profiles
   end
 
   # Example of regular route:
