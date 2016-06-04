@@ -9,18 +9,20 @@
 
   <h3>Name</h3>
 
-  <!-- <div class="row"> -->
-    <div class="form-group">
-      <%= f.text_field :prefix, class: 'form-control col-xs-1', placeholder: 'Prefix', autofocus: true %>
-      <%= f.text_field :first_name, class: 'form-control col-xs-3', placeholder: 'First' %>
-      <%= f.text_field :middle_initial, class: 'form-control col-xs-1', placeholder: 'MI' %>
-      <%= f.text_field :last_name, class: 'form-control col-xs-3', placeholder: 'Last' %>
-      <%= f.text_field :suffix, class: 'form-control col-xs-1', placeholder: 'Suffix' %>
-    </div>
-  <!-- </div> -->
+  <div class="form-group">
+    <%= f.text_field :prefix, class: 'form-control col-xs-1', placeholder: 'Prefix', autofocus: true %>
+    <%= f.text_field :first_name, class: 'form-control col-xs-3', placeholder: 'First' %>
+    <%= f.text_field :middle_initial, class: 'form-control col-xs-1', placeholder: 'MI' %>
+    <%= f.text_field :last_name, class: 'form-control col-xs-3', placeholder: 'Last' %>
+    <%= f.text_field :suffix, class: 'form-control col-xs-1', placeholder: 'Suffix' %>
+  </div>
 
   <h3>Contact</h3>
 
+  <div class="form-group">
+    <%= f.label :email %><br />
+    <%= f.text_field :email, class: 'form-control' %>
+  </div>
 
   <div class="form-group">
     <%= f.label :website_url %><br />
