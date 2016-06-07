@@ -1,0 +1,21 @@
+
+h1, h2, h3, body, * {
+	font-size: 12pt;
+}
+
+.contact {
+	text-align: center;
+}
+
+tr.experience {
+
+	width: 100%;
+
+	td.experience-left {
+		width: calc(100vw - 200px);
+	}
+
+	td.experience-right {
+		width: 200px;
+	}
+}

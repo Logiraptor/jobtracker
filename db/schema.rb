@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160603012542) do
+ActiveRecord::Schema.define(version: 20160604013250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 20160603012542) do
     t.string   "supervisor_phone"
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
+    t.integer  "user_id"
   end
 
   add_index "job_profiles", ["address_id"], name: "index_job_profiles_on_address_id", using: :btree
@@ -104,4 +105,5 @@ ActiveRecord::Schema.define(version: 20160603012542) do
   add_foreign_key "job_profile_duties", "job_profiles"
   add_foreign_key "job_profile_skills", "job_profiles"
   add_foreign_key "job_profiles", "addresses"
+  add_foreign_key "job_profiles", "users"
 end

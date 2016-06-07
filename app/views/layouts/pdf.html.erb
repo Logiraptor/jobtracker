@@ -1,0 +1,12 @@
+<html>
+	<head>
+	<% if params[:format] && params[:format] == 'pdf' %>
+	  <%= wicked_pdf_stylesheet_link_tag 'pdf' %>
+	<% else %>
+	  <%= stylesheet_link_tag 'pdf' %>
+	<% end %>
+	</head>
+	<body>
+		<%= yield %>
+	</body>
+</html>

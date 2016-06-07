@@ -1,0 +1,33 @@
+
+<div class="contact">
+	<%= @user.full_name %> <br>
+
+	<%= render 'address', address: @user.address %>
+</div>
+
+<h1>Experience</h1>
+
+<table>
+<tbody>
+<% @job_profiles.each do |job| %> 
+<tr class="experience">
+	<td class="experience-left">
+	<strong><%= job.title %></strong> - 
+	<em><%= job.employer_name %></em>
+	</td>
+	<td class="experience-right">
+	<%= job.human_start_date %> -
+	<%= job.human_end_date %>
+	</td>
+</tr>
+<tr class="experience">
+	<td class="experience-left">
+	<%= job.skills.join "; " %> ;
+	<%= job.duties.join "; " %> ;
+	<%= job.accomplishments.join "; " %>
+	</td>
+	<td class="experience-right"></td>
+</tr>
+<% end %>
+</tbody>
+</table>

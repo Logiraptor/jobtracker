@@ -5,7 +5,7 @@ class JobProfilesController < ApplicationController
   # GET /job_profiles
   # GET /job_profiles.json
   def index
-    @job_profiles = JobProfile.all
+    @job_profiles = current_user.job_profiles
   end
 
   # GET /job_profiles/1
@@ -26,6 +26,7 @@ class JobProfilesController < ApplicationController
   # POST /job_profiles.json
   def create
     @job_profile = JobProfile.new(job_profile_params)
+    @job_profile.user = current_user
     @job_profile.address =  Address.new(address_params)
     @job_profile.job_profile_duties = multi_form_params(:duties).map do |duty|
       JobProfileDuty.new(name: duty)
