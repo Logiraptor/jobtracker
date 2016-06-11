@@ -1,1 +1,1 @@
-web: jobtracker-web
+web: jobtracker
