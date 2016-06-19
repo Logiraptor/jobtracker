@@ -30,11 +30,6 @@ var _ = Describe("WelcomePage", func() {
 			Expect(page.Find("body")).To(MatchText("Welcome to Job Tracker"))
 		})
 
-		By("showing a login form", func() {
-			Expect(page.FindByLabel("Email")).To(BeFound())
-			Expect(page.FindByLabel("Password")).To(BeFound())
-		})
-
 		By("showing a sign up link", func() {
 			Expect(page.FindByLink("Sign Up")).To(BeFound())
 		})

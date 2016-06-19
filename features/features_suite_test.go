@@ -3,8 +3,9 @@ package features_test
 import (
 	"jobtracker/app"
 
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/onsi/ginkgo"
+
+	"github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 
 	"testing"
@@ -17,7 +18,7 @@ var testContext = app.Context{
 }
 
 func TestFeatures(t *testing.T) {
-	RegisterFailHandler(Fail)
+	gomega.RegisterFailHandler(ginkgo.Fail)
 	RunSpecs(t, "Features Suite")
 }
 
