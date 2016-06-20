@@ -1,11 +1,11 @@
 package features_test
 
 import (
+	"fmt"
 	"jobtracker/app"
 
-	"github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 
-	"github.com/onsi/gomega"
 	"github.com/sclevine/agouti"
 
 	"testing"
@@ -17,23 +17,31 @@ var testContext = app.Context{
 	Logger:  app.NilLogger{},
 }
 
-func TestFeatures(t *testing.T) {
-	gomega.RegisterFailHandler(ginkgo.Fail)
-	RunSpecs(t, "Features Suite")
+func init() {
+	if err := app.Start(testContext); err != nil {
+		panic(fmt.Sprintf("Failed to start app server: %s", err.Error()))
+	}
 }
 
 var agoutiDriver *agouti.WebDriver
 
-var _ = BeforeSuite(func() {
-	// Choose a WebDriver:
+func EndToEndTest(name string, t *testing.T, body func(page *agouti.Page)) {
+	RegisterTestingT(t)
 
-	agoutiDriver = agouti.PhantomJS()
-	// agoutiDriver = agouti.Selenium()
-	// agoutiDriver = agouti.ChromeDriver()
-
+	agoutiDriver = agouti.ChromeDriver()
 	Expect(agoutiDriver.Start()).To(Succeed())
-})
+	page, err := agoutiDriver.NewPage()
+	Expect(err).NotTo(HaveOccurred())
 
-var _ = AfterSuite(func() {
+	body(page)
+
+	Expect(page.Destroy()).To(Succeed())
 	Expect(agoutiDriver.Stop()).To(Succeed())
-})
+}
+
+var Given = func(description string, body func()) {
+	body()
+}
+var When = Given
+var Then = Given
+var And = Given
