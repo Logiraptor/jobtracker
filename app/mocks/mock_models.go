@@ -4,8 +4,9 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	. "jobtracker/app/models"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // Mock of UserRepository interface

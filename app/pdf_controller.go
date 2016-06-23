@@ -6,10 +6,6 @@ import (
 	"os/exec"
 )
 
-type Logger interface {
-	Log(format string, args ...interface{})
-}
-
 type PdfController struct {
 	Logger
 }

@@ -10,7 +10,7 @@ import (
 type StdLogger struct{}
 
 func (s StdLogger) Log(format string, args ...interface{}) {
-	log.Printf(format, args)
+	log.Printf(format, args...)
 }
 
 func main() {
@@ -21,6 +21,6 @@ func main() {
 	log.Println(app.Start(app.Context{
 		Port:    port,
 		AppRoot: ".",
-		Logger:  app.NilLogger{},
+		Logger:  StdLogger{},
 	}))
 }

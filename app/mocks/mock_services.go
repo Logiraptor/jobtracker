@@ -4,8 +4,9 @@
 package mocks
 
 import (
-	gomock "github.com/golang/mock/gomock"
 	models "jobtracker/app/models"
+
+	gomock "github.com/golang/mock/gomock"
 )
 
 // Mock of AuthService interface
@@ -48,4 +49,45 @@ func (_m *MockAuthService) Authenticate(email string, password string) (*models.
 
 func (_mr *_MockAuthServiceRecorder) Authenticate(arg0, arg1 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Authenticate", arg0, arg1)
+}
+
+// Mock of PasswordHasher interface
+type MockPasswordHasher struct {
+	ctrl     *gomock.Controller
+	recorder *_MockPasswordHasherRecorder
+}
+
+// Recorder for MockPasswordHasher (not exported)
+type _MockPasswordHasherRecorder struct {
+	mock *MockPasswordHasher
+}
+
+func NewMockPasswordHasher(ctrl *gomock.Controller) *MockPasswordHasher {
+	mock := &MockPasswordHasher{ctrl: ctrl}
+	mock.recorder = &_MockPasswordHasherRecorder{mock}
+	return mock
+}
+
+func (_m *MockPasswordHasher) EXPECT() *_MockPasswordHasherRecorder {
+	return _m.recorder
+}
+
+func (_m *MockPasswordHasher) New(password string) string {
+	ret := _m.ctrl.Call(_m, "New", password)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+func (_mr *_MockPasswordHasherRecorder) New(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "New", arg0)
+}
+
+func (_m *MockPasswordHasher) Verify(hash string, password string) bool {
+	ret := _m.ctrl.Call(_m, "Verify", hash, password)
+	ret0, _ := ret[0].(bool)
+	return ret0
+}
+
+func (_mr *_MockPasswordHasherRecorder) Verify(arg0, arg1 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "Verify", arg0, arg1)
 }

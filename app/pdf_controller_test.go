@@ -2,7 +2,6 @@ package app
 
 import (
 	"bytes"
-	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -16,7 +15,7 @@ func TestPdfController(t *testing.T) {
 		Logger: NilLogger{},
 	}
 	var recorder = httptest.NewRecorder()
-	var request, _ = http.NewRequest("GET", "/pdf", nil)
+	var request = mustNewRequest(t, "GET", "/", nil)
 	controller.Generate(recorder, request)
 
 	assert.Equal(t, 200, recorder.Code)

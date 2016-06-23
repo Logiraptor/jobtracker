@@ -1,7 +1,6 @@
 package features_test
 
 import (
-	"fmt"
 	"jobtracker/app"
 
 	. "github.com/onsi/gomega"
@@ -18,9 +17,7 @@ var testContext = app.Context{
 }
 
 func init() {
-	if err := app.Start(testContext); err != nil {
-		panic(fmt.Sprintf("Failed to start app server: %s", err.Error()))
-	}
+	go app.Start(testContext)
 }
 
 var agoutiDriver *agouti.WebDriver

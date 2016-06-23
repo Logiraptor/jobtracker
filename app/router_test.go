@@ -3,15 +3,17 @@ package app
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/manveru/faker"
 
 	"github.com/gorilla/mux"
+	"github.com/stretchr/testify/assert"
 )
 
 func mustNewRequest(t *testing.T, method string, path string, bodyValues url.Values) *http.Request {
@@ -37,10 +39,25 @@ func mustNewRequest(t *testing.T, method string, path string, bodyValues url.Val
 	return req
 }
 
-func TestRouter(t *testing.T) {
-	var match = new(mux.RouteMatch)
+type TestLogger struct {
+	logs []string
+}
 
-	r := Routes()
-	r.Match(mustNewRequest(t, "GET", "/", nil), match)
-	assert.Equal(t, "index", match.Route.GetName())
+func (t *TestLogger) Log(fmtString string, args ...interface{}) {
+	t.logs = append(t.logs, fmt.Sprintf(fmtString, args...))
+}
+
+func TestPather(t *testing.T) {
+	var fake, _ = faker.New("en")
+	var definedPathName = fake.Characters(10)
+	var undefinedPathName = fake.Characters(10)
+
+	routes := mux.NewRouter()
+	routes.NewRoute().Path("/test_path").Name(definedPathName)
+	var logger = &TestLogger{}
+	p := NewPather(logger, routes)
+	assert.Equal(t, p.Path(definedPathName), "/test_path")
+	assert.Equal(t, p.Path(undefinedPathName), "/")
+	assert.Len(t, logger.logs, 1)
+	assert.Contains(t, logger.logs[0], undefinedPathName)
 }
