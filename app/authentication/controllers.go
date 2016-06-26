@@ -1,14 +1,14 @@
-package app
+package authentication
 
 import (
 	"jobtracker/app/models"
-	"jobtracker/app/services"
+	"jobtracker/app/web"
 	"net/http"
 )
 
 type RegistrationsController struct {
-	Pather
-	services.AuthService
+	web.Pather
+	AuthService
 }
 
 func (r RegistrationsController) Create(rw http.ResponseWriter, req *http.Request) {

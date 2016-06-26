@@ -2,6 +2,8 @@ package app
 
 import (
 	"bytes"
+	"jobtracker/app/doubles"
+	"jobtracker/app/web"
 	"net/http/httptest"
 	"testing"
 
@@ -12,10 +14,10 @@ import (
 
 func TestPdfController(t *testing.T) {
 	var controller = PdfController{
-		Logger: NilLogger{},
+		Logger: web.NilLogger{},
 	}
 	var recorder = httptest.NewRecorder()
-	var request = mustNewRequest(t, "GET", "/", nil)
+	var request = doubles.NewRequest(t, "GET", "/", nil)
 	controller.Generate(recorder, request)
 
 	assert.Equal(t, 200, recorder.Code)

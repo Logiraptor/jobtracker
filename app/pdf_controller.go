@@ -2,12 +2,13 @@ package app
 
 import (
 	"io"
+	"jobtracker/app/web"
 	"net/http"
 	"os/exec"
 )
 
 type PdfController struct {
-	Logger
+	web.Logger
 }
 
 func (p PdfController) Generate(rw http.ResponseWriter, req *http.Request) {

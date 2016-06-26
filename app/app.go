@@ -2,22 +2,15 @@ package app
 
 import (
 	"html/template"
-	"jobtracker/app/services"
+	"jobtracker/app/authentication"
+	"jobtracker/app/web"
 	"net/http"
 	"path/filepath"
 	"strconv"
 )
 
-type Logger interface {
-	Log(format string, args ...interface{})
-}
-
-type Pather interface {
-	Path(name string, args ...string) string
-}
-
 type Context struct {
-	Logger  Logger
+	Logger  web.Logger
 	AppRoot string
 	Port    int
 }
@@ -27,11 +20,11 @@ func Start(ctx Context) error {
 		Logger: ctx.Logger,
 	}
 
-	var routes = Routes()
+	var routes = web.Routes()
 
-	var registrationsController = RegistrationsController{
-		Pather:      NewPather(ctx.Logger, routes),
-		AuthService: (services.AuthService)(nil),
+	var registrationsController = authentication.RegistrationsController{
+		Pather:      web.NewPather(ctx.Logger, routes),
+		AuthService: (authentication.AuthService)(nil),
 	}
 
 	var tmpls, err = template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html"))
@@ -53,7 +46,3 @@ func Start(ctx Context) error {
 
 	return http.ListenAndServe(":"+strconv.Itoa(ctx.Port), routes)
 }
-
-type NilLogger struct{}
-
-func (n NilLogger) Log(string, ...interface{}) {}

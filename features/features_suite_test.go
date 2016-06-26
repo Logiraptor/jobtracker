@@ -2,6 +2,7 @@ package features_test
 
 import (
 	"jobtracker/app"
+	"jobtracker/app/web"
 
 	. "github.com/onsi/gomega"
 
@@ -13,7 +14,7 @@ import (
 var testContext = app.Context{
 	Port:    3000,
 	AppRoot: "../",
-	Logger:  app.NilLogger{},
+	Logger:  web.NilLogger{},
 }
 
 func init() {

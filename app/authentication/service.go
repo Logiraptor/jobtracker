@@ -1,4 +1,4 @@
-package services
+package authentication
 
 import (
 	"errors"
@@ -21,8 +21,8 @@ type PasswordHasher interface {
 
 type PasswordAuthService struct {
 	Hasher      PasswordHasher
-	UserRepo    models.UserRepository
-	SessionRepo models.SessionRepository
+	UserRepo    UserRepository
+	SessionRepo SessionRepository
 }
 
 func (b PasswordAuthService) Create(user models.User, password string) error {

@@ -1,15 +1,9 @@
-package app
+package web
 
 import "github.com/gorilla/mux"
 
-func Routes() *mux.Router {
-	routers := mux.NewRouter()
-	routers.NewRoute().Path("/login").Name("login")
-	routers.NewRoute().Path("/pdf").Name("generate_pdf")
-	routers.NewRoute().Path("/sign_up").Methods("POST").Name("sign_up")
-
-	routers.NewRoute().PathPrefix("/").Name("index")
-	return routers
+type Pather interface {
+	Path(name string, args ...string) string
 }
 
 type routePather struct {
@@ -28,7 +22,7 @@ func (r routePather) Path(name string, args ...string) string {
 	return "/"
 }
 
-func NewPather(logger Logger, routes *mux.Router) Pather {
+func NewPather(logger Logger, routes *mux.Router) routePather {
 	return routePather{
 		Logger: logger,
 		routes: routes,

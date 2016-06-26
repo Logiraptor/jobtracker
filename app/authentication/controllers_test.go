@@ -1,11 +1,11 @@
-package app
+package authentication
 
 import (
 	"errors"
 	"jobtracker/app/doubles"
 	"jobtracker/app/models"
-	"jobtracker/app/services"
 	"jobtracker/app/tests"
+	"jobtracker/app/web"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -20,8 +20,8 @@ func TestRegistrationsController(t *testing.T) {
 	fake, _ := faker.New("en")
 	tests.Describe(t, "RegistrationsController", func(c *tests.Context) {
 		var (
-			pather      = NewPather(&TestLogger{}, Routes())
-			authService = &services.PasswordAuthService{
+			pather      = web.NewPather(&doubles.FakeLogger{}, web.Routes())
+			authService = &PasswordAuthService{
 				UserRepo:    doubles.NewFakeUserRepository(),
 				SessionRepo: doubles.NewFakeSessionRepository(),
 				Hasher:      doubles.NewFakePasswordHasher(),
@@ -39,7 +39,7 @@ func TestRegistrationsController(t *testing.T) {
 				AuthService: authService,
 			}
 			recorder = httptest.NewRecorder()
-			request = mustNewRequest(t, "POST", "/create", url.Values{
+			request = doubles.NewRequest(t, "POST", "/create", url.Values{
 				"email":            {email},
 				"password":         {password},
 				"password_confirm": {password},
@@ -51,7 +51,7 @@ func TestRegistrationsController(t *testing.T) {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, NewPather(nil, Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, web.NewPather(nil, web.Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
 			})
 
 			c.It("Sets a session cookie", func() {
@@ -80,7 +80,7 @@ func TestRegistrationsController(t *testing.T) {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, NewPather(nil, Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, web.NewPather(nil, web.Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
 			})
 		})
 	})

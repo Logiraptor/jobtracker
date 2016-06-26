@@ -1,11 +1,10 @@
 package doubles
 
 import (
-	"encoding/hex"
 	"errors"
 	"jobtracker/app/models"
-	"jobtracker/app/services"
-	"math/rand"
+
+	"strconv"
 )
 
 type FakeUserRepository struct {
@@ -54,9 +53,7 @@ func NewFakeSessionRepository() *FakeSessionRepository {
 			return &user, nil
 		},
 		New_: func(user models.User) (string, error) {
-			var buf [16]byte
-			rand.Read(buf[:])
-			token := hex.EncodeToString(buf[:])
+			token := strconv.Itoa(len(sessions))
 			sessions[token] = user
 			return token, nil
 		},
@@ -75,26 +72,3 @@ type FakePasswordHasher struct {
 	New_    func(string) string
 	Verify_ func(string, string) bool
 }
-
-func NewFakePasswordHasher() *FakePasswordHasher {
-	return &FakePasswordHasher{
-		New_: func(password string) string {
-			return password + "hash"
-		},
-		Verify_: func(hash, password string) bool {
-			return password+"hash" == hash
-		},
-	}
-}
-
-func (f *FakePasswordHasher) New(password string) string {
-	return f.New_(password)
-}
-
-func (f *FakePasswordHasher) Verify(hash, password string) bool {
-	return f.Verify_(hash, password)
-}
-
-var _ models.UserRepository = &FakeUserRepository{}
-var _ models.SessionRepository = &FakeSessionRepository{}
-var _ services.PasswordHasher = &FakePasswordHasher{}
