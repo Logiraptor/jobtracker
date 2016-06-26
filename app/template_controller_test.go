@@ -20,7 +20,8 @@ func TestTemplateController(t *testing.T) {
 	var controller = TemplateController{
 		Template: tmpl,
 		AppContext: Context{
-			Port: port,
+			Port:   port,
+			Logger: NilLogger{},
 		},
 	}
 	var recorder = httptest.NewRecorder()

@@ -4,9 +4,8 @@
 package mocks
 
 import (
-	. "jobtracker/app/models"
-
 	gomock "github.com/golang/mock/gomock"
+	. "jobtracker/app/models"
 )
 
 // Mock of UserRepository interface
@@ -49,4 +48,47 @@ func (_m *MockUserRepository) Store(_param0 User) error {
 
 func (_mr *_MockUserRepositoryRecorder) Store(arg0 interface{}) *gomock.Call {
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Store", arg0)
+}
+
+// Mock of SessionRepository interface
+type MockSessionRepository struct {
+	ctrl     *gomock.Controller
+	recorder *_MockSessionRepositoryRecorder
+}
+
+// Recorder for MockSessionRepository (not exported)
+type _MockSessionRepositoryRecorder struct {
+	mock *MockSessionRepository
+}
+
+func NewMockSessionRepository(ctrl *gomock.Controller) *MockSessionRepository {
+	mock := &MockSessionRepository{ctrl: ctrl}
+	mock.recorder = &_MockSessionRepositoryRecorder{mock}
+	return mock
+}
+
+func (_m *MockSessionRepository) EXPECT() *_MockSessionRepositoryRecorder {
+	return _m.recorder
+}
+
+func (_m *MockSessionRepository) FindByToken(token string) (*User, error) {
+	ret := _m.ctrl.Call(_m, "FindByToken", token)
+	ret0, _ := ret[0].(*User)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockSessionRepositoryRecorder) FindByToken(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "FindByToken", arg0)
+}
+
+func (_m *MockSessionRepository) New(_param0 User) (string, error) {
+	ret := _m.ctrl.Call(_m, "New", _param0)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+func (_mr *_MockSessionRepositoryRecorder) New(arg0 interface{}) *gomock.Call {
+	return _mr.mock.ctrl.RecordCall(_mr.mock, "New", arg0)
 }

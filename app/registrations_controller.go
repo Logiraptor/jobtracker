@@ -12,8 +12,11 @@ type RegistrationsController struct {
 }
 
 func (r RegistrationsController) Create(rw http.ResponseWriter, req *http.Request) {
-	r.AuthService.Create(models.User{
-		Email: req.FormValue("email"),
-	}, req.FormValue("password"))
+	email, password := req.FormValue("email"), req.FormValue("password")
+	if err := r.AuthService.Create(models.User{Email: email}, password); err == nil {
+		r.AuthService.Authenticate(email, password)
+		rw.Header().Add("Set-Cookie", "session")
+	}
+
 	http.Redirect(rw, req, r.Path("index"), http.StatusFound)
 }

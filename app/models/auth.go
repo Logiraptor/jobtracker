@@ -16,3 +16,8 @@ type UserRepository interface {
 	FindByEmail(email string) (*User, error)
 	Store(User) error
 }
+
+type SessionRepository interface {
+	FindByToken(token string) (*User, error)
+	New(User) (string, error)
+}

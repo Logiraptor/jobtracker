@@ -4,9 +4,8 @@
 package mocks
 
 import (
-	models "jobtracker/app/models"
-
 	gomock "github.com/golang/mock/gomock"
+	models "jobtracker/app/models"
 )
 
 // Mock of AuthService interface
@@ -40,11 +39,12 @@ func (_mr *_MockAuthServiceRecorder) Create(arg0, arg1 interface{}) *gomock.Call
 	return _mr.mock.ctrl.RecordCall(_mr.mock, "Create", arg0, arg1)
 }
 
-func (_m *MockAuthService) Authenticate(email string, password string) (*models.User, error) {
+func (_m *MockAuthService) Authenticate(email string, password string) (*models.User, string, error) {
 	ret := _m.ctrl.Call(_m, "Authenticate", email, password)
 	ret0, _ := ret[0].(*models.User)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret1, _ := ret[1].(string)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
 }
 
 func (_mr *_MockAuthServiceRecorder) Authenticate(arg0, arg1 interface{}) *gomock.Call {
