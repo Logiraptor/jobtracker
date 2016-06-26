@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-//go:generate mockgen -source $GOFILE -destination mocks.go -package tests
-
 type TestInterface interface {
 	Before(string)
 	After(string)

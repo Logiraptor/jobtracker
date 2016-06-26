@@ -9,8 +9,6 @@ var (
 	ErrInvalidCredentials = errors.New("invalid email and/or password")
 )
 
-//go:generate mockgen -source $GOFILE -destination ../mocks/mock_services.go -package mocks
-
 type AuthService interface {
 	Create(user models.User, password string) error
 	Authenticate(email, password string) (user *models.User, token string, err error)

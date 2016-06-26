@@ -1,7 +1,8 @@
 package app
 
 import (
-	"jobtracker/app/mocks"
+	"errors"
+	"jobtracker/app/doubles"
 	"jobtracker/app/models"
 	"jobtracker/app/services"
 	"jobtracker/app/tests"
@@ -12,8 +13,6 @@ import (
 
 	"github.com/manveru/faker"
 
-	"github.com/golang/mock/gomock"
-
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,22 +20,20 @@ func TestRegistrationsController(t *testing.T) {
 	fake, _ := faker.New("en")
 	tests.Describe(t, "RegistrationsController", func(c *tests.Context) {
 		var (
-			pather                        *mocks.MockPather
-			authService                   *mocks.MockAuthService
-			email, password, sessionToken string
-			controller                    RegistrationsController
-			recorder                      *httptest.ResponseRecorder
-			request                       *http.Request
-			mockCtrl                      *gomock.Controller
+			pather      = NewPather(&TestLogger{}, Routes())
+			authService = &services.PasswordAuthService{
+				UserRepo:    doubles.NewFakeUserRepository(),
+				SessionRepo: doubles.NewFakeSessionRepository(),
+				Hasher:      doubles.NewFakePasswordHasher(),
+			}
+			email, password string
+			controller      RegistrationsController
+			recorder        *httptest.ResponseRecorder
+			request         *http.Request
 		)
 		c.Before(func() {
-			mockCtrl = gomock.NewController(t)
-			pather = mocks.NewMockPather(mockCtrl)
-			pather.EXPECT().Path("index").Return("fake path")
-
 			email = fake.Email()
 			password = fake.Characters(10)
-			authService = mocks.NewMockAuthService(mockCtrl)
 			controller = RegistrationsController{
 				Pather:      pather,
 				AuthService: authService,
@@ -49,26 +46,12 @@ func TestRegistrationsController(t *testing.T) {
 			})
 		})
 
-		c.After(func() {
-			mockCtrl.Finish()
-		})
-
 		c.Describe("Successful Create", func(c *tests.Context) {
-			c.Before(func() {
-				authService.EXPECT().Create(models.User{
-					Email: email,
-				}, password).Return(nil)
-				authService.EXPECT().Authenticate(email, password).Return(&models.User{
-					Email:        email,
-					PasswordHash: password,
-				}, sessionToken, nil)
-			})
-
 			c.It("Redirects to the index path", func() {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, "/fake path", recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, NewPather(nil, Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
 			})
 
 			c.It("Sets a session cookie", func() {
@@ -80,16 +63,24 @@ func TestRegistrationsController(t *testing.T) {
 
 		c.Describe("Failed Create", func(c *tests.Context) {
 			c.Before(func() {
-				authService.EXPECT().Create(models.User{
-					Email: email,
-				}, password).Return(services.ErrInvalidCredentials)
+				fake := doubles.NewFakeUserRepository()
+				fake.Store_ = func(models.User) error {
+					return errors.New("cannot store user")
+				}
+				authService.UserRepo = fake
+			})
+
+			c.It("Does not set a session cookie", func() {
+				controller.Create(recorder, request)
+
+				assert.Empty(t, recorder.HeaderMap.Get("Set-Cookie"))
 			})
 
 			c.It("Redirects to the index path", func() {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, "/fake path", recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, NewPather(nil, Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
 			})
 		})
 	})

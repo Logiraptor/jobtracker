@@ -2,8 +2,6 @@ package models
 
 import "time"
 
-//go:generate mockgen -source $GOFILE -destination ../mocks/mock_models.go -package mocks -imports .=jobtracker/app/models
-
 type User struct {
 	Email        string
 	PasswordHash string

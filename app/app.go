@@ -8,8 +8,6 @@ import (
 	"strconv"
 )
 
-//go:generate mockgen -source $GOFILE -destination ./mocks/mock_app.go -package mocks
-
 type Logger interface {
 	Log(format string, args ...interface{})
 }
