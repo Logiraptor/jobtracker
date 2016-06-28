@@ -8,14 +8,14 @@ import (
 
 type RegistrationsController struct {
 	web.Pather
-	AuthService
+	AuthService        AuthService
+	HTTPSessionTracker HTTPSessionTracker
 }
 
 func (r RegistrationsController) Create(rw http.ResponseWriter, req *http.Request) {
 	email, password := req.FormValue("email"), req.FormValue("password")
 	if err := r.AuthService.Create(models.User{Email: email}, password); err == nil {
-		r.AuthService.Authenticate(email, password)
-		rw.Header().Add("Set-Cookie", "session")
+		r.HTTPSessionTracker.Login(rw, req, models.User{Email: email})
 	}
 
 	http.Redirect(rw, req, r.Path("index"), http.StatusFound)

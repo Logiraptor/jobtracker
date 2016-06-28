@@ -3,7 +3,7 @@ package app
 import (
 	"fmt"
 	"html/template"
-	"jobtracker/app/doubles"
+	"jobtracker/app/tests/doubles"
 	"jobtracker/app/web"
 	"math/rand"
 	"net/http"

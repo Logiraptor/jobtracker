@@ -1,12 +1,17 @@
 package doubles
 
+import (
+	"crypto/md5"
+	"encoding/hex"
+)
+
 func NewFakePasswordHasher() *FakePasswordHasher {
 	return &FakePasswordHasher{
 		New_: func(password string) string {
-			return password + "hash"
+			return hex.EncodeToString(md5.New().Sum([]byte(password)))
 		},
 		Verify_: func(hash, password string) bool {
-			return password+"hash" == hash
+			return hash == hex.EncodeToString(md5.New().Sum([]byte(password)))
 		},
 	}
 }

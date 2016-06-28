@@ -1,3 +1,3 @@
 development:
     driver: postgres
-    open: user=oyarzun dbname=jobtracker sslmode=disable
+    open: postgres://jobtracker:@localhost:5433/jobtracker

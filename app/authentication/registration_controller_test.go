@@ -2,14 +2,17 @@ package authentication
 
 import (
 	"errors"
-	"jobtracker/app/doubles"
 	"jobtracker/app/models"
 	"jobtracker/app/tests"
+	"jobtracker/app/tests/doubles"
 	"jobtracker/app/web"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"testing"
+
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
 
 	"github.com/manveru/faker"
 
@@ -20,11 +23,11 @@ func TestRegistrationsController(t *testing.T) {
 	fake, _ := faker.New("en")
 	tests.Describe(t, "RegistrationsController", func(c *tests.Context) {
 		var (
+			sessionRepo *doubles.FakeSessionRepository
 			pather      = web.NewPather(&doubles.FakeLogger{}, web.Routes())
 			authService = &PasswordAuthService{
-				UserRepo:    doubles.NewFakeUserRepository(),
-				SessionRepo: doubles.NewFakeSessionRepository(),
-				Hasher:      doubles.NewFakePasswordHasher(),
+				UserRepo: doubles.NewFakeUserRepository(),
+				Hasher:   doubles.NewFakePasswordHasher(),
 			}
 			email, password string
 			controller      RegistrationsController
@@ -34,9 +37,15 @@ func TestRegistrationsController(t *testing.T) {
 		c.Before(func() {
 			email = fake.Email()
 			password = fake.Characters(10)
+			sessionRepo = doubles.NewFakeSessionRepository()
 			controller = RegistrationsController{
 				Pather:      pather,
 				AuthService: authService,
+				HTTPSessionTracker: &CookieSessionTracker{
+					SessionName:       "test",
+					SessionRepository: sessionRepo,
+					Store:             sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
+				},
 			}
 			recorder = httptest.NewRecorder()
 			request = doubles.NewRequest(t, "POST", "/create", url.Values{

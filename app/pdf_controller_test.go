@@ -2,7 +2,7 @@ package app
 
 import (
 	"bytes"
-	"jobtracker/app/doubles"
+	"jobtracker/app/tests/doubles"
 	"jobtracker/app/web"
 	"net/http/httptest"
 	"testing"

@@ -1,8 +1,8 @@
 package authentication
 
 import (
-	"jobtracker/app/doubles"
 	"jobtracker/app/models"
+	"jobtracker/app/tests/doubles"
 
 	"jobtracker/app/tests"
 
@@ -16,7 +16,6 @@ func TestPasswordAuthService(t *testing.T) {
 	tests.Describe(t, "PasswordAuthService", func(c *tests.Context) {
 		var (
 			userRepo        *doubles.FakeUserRepository
-			sessionRepo     *doubles.FakeSessionRepository
 			hasher          *doubles.FakePasswordHasher
 			authService     *PasswordAuthService
 			fake, _         = faker.New("en")
@@ -24,12 +23,10 @@ func TestPasswordAuthService(t *testing.T) {
 		)
 		c.Before(func() {
 			userRepo = doubles.NewFakeUserRepository()
-			sessionRepo = doubles.NewFakeSessionRepository()
 			hasher = doubles.NewFakePasswordHasher()
 			authService = &PasswordAuthService{
-				Hasher:      hasher,
-				UserRepo:    userRepo,
-				SessionRepo: sessionRepo,
+				Hasher:   hasher,
+				UserRepo: userRepo,
 			}
 			email = fake.Email()
 			password = fake.Characters(20)
@@ -60,13 +57,9 @@ func TestPasswordAuthService(t *testing.T) {
 			})
 
 			c.It("Returns the created user and a token", func() {
-				user, token, err := authService.Authenticate(email, password)
+				user, err := authService.Authenticate(email, password)
 				assert.NoError(t, err)
 				assert.Equal(t, email, user.Email)
-				assert.NotEmpty(t, token)
-				tokenUser, err := sessionRepo.FindByToken(token)
-				assert.NoError(t, err)
-				assert.Equal(t, email, tokenUser.Email)
 			})
 
 			c.Describe("Failed Lookup", func(c *tests.Context) {
@@ -77,8 +70,7 @@ func TestPasswordAuthService(t *testing.T) {
 				})
 
 				c.It("Returns invalid credentials", func() {
-					user, token, err := authService.Authenticate(email, password)
-					assert.Empty(t, token)
+					user, err := authService.Authenticate(email, password)
 					assert.Nil(t, user)
 					assert.Equal(t, ErrInvalidCredentials, err)
 				})
@@ -92,25 +84,9 @@ func TestPasswordAuthService(t *testing.T) {
 				})
 
 				c.It("Returns invalid credentials", func() {
-					user, token, err := authService.Authenticate(email, password)
-					assert.Empty(t, token)
+					user, err := authService.Authenticate(email, password)
 					assert.Nil(t, user)
 					assert.Equal(t, ErrInvalidCredentials, err)
-				})
-			})
-
-			c.Describe("Failed session creation", func(c *tests.Context) {
-				c.Before(func() {
-					sessionRepo.New_ = func(models.User) (string, error) {
-						return "", assert.AnError
-					}
-				})
-
-				c.It("Returns the error from the session repo", func() {
-					user, token, err := authService.Authenticate(email, password)
-					assert.Empty(t, token)
-					assert.Nil(t, user)
-					assert.Equal(t, assert.AnError, err)
 				})
 			})
 		})

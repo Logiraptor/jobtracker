@@ -1,7 +1,7 @@
 package web
 
 import (
-	"jobtracker/app/doubles"
+	"jobtracker/app/tests/doubles"
 	"testing"
 
 	"github.com/manveru/faker"

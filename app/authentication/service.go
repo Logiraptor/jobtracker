@@ -11,7 +11,7 @@ var (
 
 type AuthService interface {
 	Create(user models.User, password string) error
-	Authenticate(email, password string) (user *models.User, token string, err error)
+	Authenticate(email, password string) (user *models.User, err error)
 }
 
 type PasswordHasher interface {
@@ -20,9 +20,8 @@ type PasswordHasher interface {
 }
 
 type PasswordAuthService struct {
-	Hasher      PasswordHasher
-	UserRepo    UserRepository
-	SessionRepo SessionRepository
+	Hasher   PasswordHasher
+	UserRepo UserRepository
 }
 
 func (b PasswordAuthService) Create(user models.User, password string) error {
@@ -30,18 +29,14 @@ func (b PasswordAuthService) Create(user models.User, password string) error {
 	return b.UserRepo.Store(user)
 }
 
-func (b PasswordAuthService) Authenticate(email, password string) (*models.User, string, error) {
+func (b PasswordAuthService) Authenticate(email, password string) (*models.User, error) {
 	user, err := b.UserRepo.FindByEmail(email)
 	if err != nil {
-		return nil, "", ErrInvalidCredentials
+		return nil, ErrInvalidCredentials
 	}
 	if !b.Hasher.Verify(user.PasswordHash, password) {
-		return nil, "", ErrInvalidCredentials
-	}
-	token, err := b.SessionRepo.New(*user)
-	if err != nil {
-		return nil, "", err
+		return nil, ErrInvalidCredentials
 	}
 
-	return user, token, nil
+	return user, nil
 }
