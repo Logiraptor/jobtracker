@@ -9,5 +9,5 @@ import (
 func TestFakes(t *testing.T) {
 	contracts.PasswordHasher(t, NewFakePasswordHasher())
 	contracts.UserRepo(t, NewFakeUserRepository())
-	contracts.SessionRepo(t, NewFakeSessionRepository())
+	contracts.SessionRepo(t, NewFakeUserRepository(), NewFakeSessionRepository())
 }

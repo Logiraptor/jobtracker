@@ -41,7 +41,7 @@ type SessionRepository interface {
 	New(models.User) (string, error)
 }
 
-func SessionRepo(t *testing.T, repo SessionRepository) {
+func SessionRepo(t *testing.T, users UserRepository, repo SessionRepository) {
 	fake, _ := faker.New("en")
 	for i := 0; i < 10; i++ {
 		email := fake.Email()
@@ -52,6 +52,9 @@ func SessionRepo(t *testing.T, repo SessionRepository) {
 			PasswordHash: hash,
 			CurrentToken: token,
 		}
+
+		err := users.Store(user)
+		assert.NoError(t, err)
 
 		session, err := repo.New(user)
 		assert.NoError(t, err)

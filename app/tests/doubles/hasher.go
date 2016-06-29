@@ -1,17 +1,21 @@
 package doubles
 
 import (
-	"crypto/md5"
+	"crypto/rand"
 	"encoding/hex"
+	"strings"
 )
 
 func NewFakePasswordHasher() *FakePasswordHasher {
 	return &FakePasswordHasher{
 		New_: func(password string) string {
-			return hex.EncodeToString(md5.New().Sum([]byte(password)))
+			var salt [16]byte
+			rand.Read(salt[:])
+			return hex.EncodeToString(salt[:]) + "$" + password
 		},
 		Verify_: func(hash, password string) bool {
-			return hash == hex.EncodeToString(md5.New().Sum([]byte(password)))
+			salt := strings.Split(hash, "$")[0]
+			return hash == salt+"$"+password
 		},
 	}
 }

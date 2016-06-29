@@ -11,7 +11,7 @@ import (
 )
 
 func testDatabase(t *testing.T) *sql.DB {
-	db, err := sql.Open("postgres", "postgresql://app:@localhost:5433/jobtracker-test")
+	db, err := sql.Open("postgres", "postgresql://jobtracker:@localhost:5433/jobtracker-test")
 	assert.NoError(t, err)
 	assert.NoError(t, db.Ping())
 	return db
@@ -21,6 +21,15 @@ func TestPSQLUserRepo(t *testing.T) {
 	db := testDatabase(t)
 	defer db.Close()
 
-	repo := &PSQLUserRepo{}
+	repo := &PSQLUserRepo{DB: db}
 	contracts.UserRepo(t, repo)
+}
+
+func TestPSQLSessionRepo(t *testing.T) {
+	db := testDatabase(t)
+	defer db.Close()
+
+	repo := &PSQLSessionRepo{DB: db}
+	userRepo := &PSQLUserRepo{DB: db}
+	contracts.SessionRepo(t, userRepo, repo)
 }

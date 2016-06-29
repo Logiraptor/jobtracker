@@ -9,7 +9,11 @@ import (
 	"path/filepath"
 	"strconv"
 
+	_ "github.com/lib/pq"
+
 	"github.com/gorilla/securecookie"
+
+	"database/sql"
 
 	"github.com/gorilla/sessions"
 )
@@ -26,20 +30,27 @@ func Start(ctx Context) error {
 
 	cookieStore := sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
 
+	db, err := sql.Open("postgres", "postgres://jobtracker:@localhost:5433/jobtracker")
+	if err != nil {
+		return err
+	}
+
 	c := inject.NewContainer()
+	c.Register((**sql.DB)(nil), db)
+	c.Register((*authentication.SessionRepository)(nil), authentication.PSQLSessionRepo{})
+	c.Register((*authentication.UserRepository)(nil), authentication.PSQLUserRepo{})
+
 	c.Register((*sessions.Store)(nil), cookieStore)
 	c.Register((*web.Logger)(nil), ctx.Logger)
 	c.Register((*web.Pather)(nil), web.NewPather(ctx.Logger, routes))
 	c.Register((*authentication.HTTPSessionTracker)(nil), authentication.CookieSessionTracker{
 		SessionName: "jobtracker",
 	})
-	c.Register((*authentication.SessionRepository)(nil), TODO)
-	c.Register((*authentication.UserRepository)(nil), TODO)
 	c.Register((*authentication.PasswordHasher)(nil), authentication.BCryptPasswordHasher{})
 	c.Register((*authentication.AuthService)(nil), authentication.PasswordAuthService{})
 
 	var pdfController PdfController
-	if err := c.FillStruct(&pdfController); err != nil {
+	if err = c.FillStruct(&pdfController); err != nil {
 		return err
 	}
 
@@ -48,7 +59,7 @@ func Start(ctx Context) error {
 		return err
 	}
 
-	var tmpls, err = template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html"))
+	tmpls, err := template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html"))
 	if err != nil {
 		return err
 	}
