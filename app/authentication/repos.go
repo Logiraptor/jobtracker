@@ -12,7 +12,11 @@ type PSQLUserRepo struct {
 	DB *sql.DB
 }
 
-func (p *PSQLUserRepo) FindByEmail(email string) (*models.User, error) {
+func NewPSQLUserRepo(db *sql.DB) PSQLUserRepo {
+	return PSQLUserRepo{DB: db}
+}
+
+func (p PSQLUserRepo) FindByEmail(email string) (*models.User, error) {
 	row := p.DB.QueryRow(`
 	SELECT email, password_hash, current_token
 	FROM users WHERE email = $1`, email)
@@ -24,10 +28,10 @@ func (p *PSQLUserRepo) FindByEmail(email string) (*models.User, error) {
 	return &user, nil
 }
 
-func (p *PSQLUserRepo) Store(user models.User) error {
+func (p PSQLUserRepo) Store(user models.User) error {
 	now := time.Now()
-	_, err := p.DB.Exec(`INSERT INTO users 
-		(email, password_hash, current_token, created_at, updated_at) 
+	_, err := p.DB.Exec(`INSERT INTO users
+		(email, password_hash, current_token, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $5)`,
 		user.Email, user.PasswordHash, user.CurrentToken, now, now)
 	return err
@@ -37,7 +41,11 @@ type PSQLSessionRepo struct {
 	DB *sql.DB
 }
 
-func (p *PSQLSessionRepo) FindByToken(token string) (*models.User, error) {
+func NewPSQLSessionRepo(db *sql.DB) PSQLSessionRepo {
+	return PSQLSessionRepo{DB: db}
+}
+
+func (p PSQLSessionRepo) FindByToken(token string) (*models.User, error) {
 	row := p.DB.QueryRow(`
 	SELECT email, password_hash, current_token
 	FROM users
@@ -53,7 +61,7 @@ func (p *PSQLSessionRepo) FindByToken(token string) (*models.User, error) {
 }
 
 // User has to exist in the database
-func (p *PSQLSessionRepo) New(user models.User) (string, error) {
+func (p PSQLSessionRepo) New(user models.User) (string, error) {
 	var buf [64]byte
 	rand.Read(buf[:])
 

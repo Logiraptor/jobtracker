@@ -11,6 +11,12 @@ type PdfController struct {
 	web.Logger
 }
 
+func NewPdfController(logger web.Logger) PdfController {
+	return PdfController{
+		Logger: logger,
+	}
+}
+
 func (p PdfController) Generate(rw http.ResponseWriter, req *http.Request) {
 	rw.Header().Set("Content-Type", "application/pdf")
 

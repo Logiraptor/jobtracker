@@ -12,6 +12,14 @@ type RegistrationsController struct {
 	HTTPSessionTracker HTTPSessionTracker
 }
 
+func NewRegistrationsController(pather web.Pather, authService AuthService, sessionTracker HTTPSessionTracker) RegistrationsController {
+	return RegistrationsController{
+		Pather:             pather,
+		AuthService:        authService,
+		HTTPSessionTracker: sessionTracker,
+	}
+}
+
 func (r RegistrationsController) Create(rw http.ResponseWriter, req *http.Request) {
 	email, password := req.FormValue("email"), req.FormValue("password")
 	if err := r.AuthService.Create(models.User{Email: email}, password); err == nil {

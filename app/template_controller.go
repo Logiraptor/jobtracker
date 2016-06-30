@@ -11,6 +11,13 @@ type TemplateController struct {
 	AppContext Context
 }
 
+func NewTemplateController(template *template.Template, ctx Context) TemplateController {
+	return TemplateController{
+		Template:   template,
+		AppContext: ctx,
+	}
+}
+
 func (t TemplateController) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	path := req.URL.Path
 	switch {

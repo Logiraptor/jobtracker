@@ -24,6 +24,13 @@ type PasswordAuthService struct {
 	UserRepo UserRepository
 }
 
+func NewPasswordAuthService(hasher PasswordHasher, userRepo UserRepository) PasswordAuthService {
+	return PasswordAuthService{
+		Hasher:   hasher,
+		UserRepo: userRepo,
+	}
+}
+
 func (b PasswordAuthService) Create(user models.User, password string) error {
 	user.PasswordHash = b.Hasher.New(password)
 	return b.UserRepo.Store(user)
