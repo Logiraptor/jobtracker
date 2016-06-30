@@ -2,19 +2,18 @@ package authentication
 
 import (
 	"jobtracker/app/models"
-	"jobtracker/app/web"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type RegistrationsController struct {
-	web.Pather
 	AuthService        AuthService
 	HTTPSessionTracker HTTPSessionTracker
 }
 
-func NewRegistrationsController(pather web.Pather, authService AuthService, sessionTracker HTTPSessionTracker) RegistrationsController {
+func NewRegistrationsController(authService AuthService, sessionTracker HTTPSessionTracker) RegistrationsController {
 	return RegistrationsController{
-		Pather:             pather,
 		AuthService:        authService,
 		HTTPSessionTracker: sessionTracker,
 	}
@@ -26,5 +25,9 @@ func (r RegistrationsController) Create(rw http.ResponseWriter, req *http.Reques
 		r.HTTPSessionTracker.Login(rw, req, models.User{Email: email})
 	}
 
-	http.Redirect(rw, req, r.Path("index"), http.StatusFound)
+	http.Redirect(rw, req, "/", http.StatusFound)
+}
+
+func (r RegistrationsController) Register(mux *mux.Router) {
+	mux.Path("/sign_up").Methods("POST").HandlerFunc(r.Create)
 }

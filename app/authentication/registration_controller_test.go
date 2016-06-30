@@ -5,7 +5,6 @@ import (
 	"jobtracker/app/models"
 	"jobtracker/app/tests"
 	"jobtracker/app/tests/doubles"
-	"jobtracker/app/web"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -24,10 +23,9 @@ func TestRegistrationsController(t *testing.T) {
 	tests.Describe(t, "RegistrationsController", func(c *tests.Context) {
 		var (
 			sessionRepo *doubles.FakeSessionRepository
-			pather      = web.NewPather(&doubles.FakeLogger{}, web.Routes())
 			authService = &PasswordAuthService{
-				UserRepo: doubles.NewFakeUserRepository(),
 				Hasher:   doubles.NewFakePasswordHasher(),
+				UserRepo: doubles.NewFakeUserRepository(),
 			}
 			email, password string
 			controller      RegistrationsController
@@ -38,15 +36,11 @@ func TestRegistrationsController(t *testing.T) {
 			email = fake.Email()
 			password = fake.Characters(10)
 			sessionRepo = doubles.NewFakeSessionRepository()
-			controller = RegistrationsController{
-				Pather:      pather,
-				AuthService: authService,
-				HTTPSessionTracker: &CookieSessionTracker{
-					SessionName:       "test",
-					SessionRepository: sessionRepo,
-					Store:             sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
-				},
-			}
+			controller = NewRegistrationsController(authService, &CookieSessionTracker{
+				SessionName:       "test",
+				SessionRepository: sessionRepo,
+				Store:             sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
+			})
 			recorder = httptest.NewRecorder()
 			request = doubles.NewRequest(t, "POST", "/create", url.Values{
 				"email":            {email},
@@ -60,7 +54,7 @@ func TestRegistrationsController(t *testing.T) {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, web.NewPather(nil, web.Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, "/", recorder.HeaderMap.Get("Location"))
 			})
 
 			c.It("Sets a session cookie", func() {
@@ -89,7 +83,7 @@ func TestRegistrationsController(t *testing.T) {
 				controller.Create(recorder, request)
 
 				assert.Equal(t, http.StatusFound, recorder.Code)
-				assert.Equal(t, web.NewPather(nil, web.Routes()).Path("index"), recorder.HeaderMap.Get("Location"))
+				assert.Equal(t, "/", recorder.HeaderMap.Get("Location"))
 			})
 		})
 	})

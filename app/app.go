@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 
@@ -22,37 +23,42 @@ type Context struct {
 	Port    int
 }
 
+type Controller interface {
+	Register(mux *mux.Router)
+}
+
 func Start(ctx Context) error {
-
-	var routes = web.Routes()
-
 	db, err := sql.Open("postgres", "postgres://jobtracker:@localhost:5433/jobtracker")
 	if err != nil {
 		return err
 	}
 
 	var (
-		pather = web.NewPather(ctx.Logger, routes)
-		store  = sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
-		tmpls  = template.Must(template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html")))
-
-		pdfController      = NewPdfController(ctx.Logger)
-		templateController = NewTemplateController(tmpls, ctx)
+		store = sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
+		tmpls = template.Must(template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html")))
 
 		userRepo                = authentication.NewPSQLUserRepo(db)
 		sessionRepository       = authentication.NewPSQLSessionRepo(db)
 		hasher                  = authentication.NewBCryptPasswordHasher(10)
 		httpSessionTracker      = authentication.NewCookieSessionTracker("jobtracker", store, sessionRepository)
 		authService             = authentication.NewPasswordAuthService(hasher, userRepo)
-		registrationsController = authentication.NewRegistrationsController(pather, authService, httpSessionTracker)
+		registrationsController = authentication.NewRegistrationsController(authService, httpSessionTracker)
+
+		pdfController       = NewPdfController(ctx.Logger)
+		dashboardController = NewDashboardController(tmpls, authService)
 	)
 
-	routes.Get("generate_pdf").HandlerFunc(pdfController.Generate)
-	routes.Get("sign_up").HandlerFunc(registrationsController.Create)
+	var controllers = []Controller{
+		registrationsController,
+		pdfController,
+		dashboardController,
+	}
 
-	routes.Get("index").Handler(templateController)
+	router := mux.NewRouter()
+	for _, c := range controllers {
+		c.Register(router)
+	}
 
 	ctx.Logger.Log("App started on port: %d", ctx.Port)
-
-	return http.ListenAndServe(":"+strconv.Itoa(ctx.Port), routes)
+	return http.ListenAndServe(":"+strconv.Itoa(ctx.Port), router)
 }

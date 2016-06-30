@@ -5,6 +5,8 @@ import (
 	"jobtracker/app/web"
 	"net/http"
 	"os/exec"
+
+	"github.com/gorilla/mux"
 )
 
 type PdfController struct {
@@ -31,4 +33,8 @@ func (p PdfController) Generate(rw http.ResponseWriter, req *http.Request) {
 
 	io.Copy(rw, stdout)
 	cmd.Wait()
+}
+
+func (p PdfController) Register(mux *mux.Router) {
+	mux.Path("/generate_pdf").HandlerFunc(p.Generate)
 }
