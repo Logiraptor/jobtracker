@@ -36,21 +36,24 @@ func Start(ctx Context) error {
 	var (
 		store = sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
 		tmpls = template.Must(template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html")))
+		view  = web.NewTemplateView(tmpls)
 
 		userRepo                = authentication.NewPSQLUserRepo(db)
 		sessionRepository       = authentication.NewPSQLSessionRepo(db)
 		hasher                  = authentication.NewBCryptPasswordHasher(10)
 		httpSessionTracker      = authentication.NewCookieSessionTracker("jobtracker", store, sessionRepository)
 		authService             = authentication.NewPasswordAuthService(hasher, userRepo)
-		registrationsController = authentication.NewRegistrationsController(authService, httpSessionTracker)
+		registrationsController = authentication.NewRegistrationsController(view, authService, httpSessionTracker)
+		sessionsController      = authentication.NewSessionsController(authService, httpSessionTracker)
 
 		pdfController       = NewPdfController(ctx.Logger)
-		dashboardController = NewDashboardController(tmpls, authService)
+		dashboardController = NewDashboardController(view, httpSessionTracker)
 	)
 
 	var controllers = []Controller{
-		registrationsController,
 		pdfController,
+		registrationsController,
+		sessionsController,
 		dashboardController,
 	}
 

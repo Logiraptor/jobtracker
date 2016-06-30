@@ -1,6 +1,6 @@
 <html>
 	<body>
-		Welcome to Job Tracker
+		Welcome to Job Tracker, {{with .}}{{.Email}}{{end}}
 
 		<form action="/login" method="post">
 			<label>Email<input type="text" name="email"></label>

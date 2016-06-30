@@ -1,6 +1,7 @@
 package features_test
 
 import (
+	"fmt"
 	"jobtracker/app"
 	"jobtracker/app/web"
 
@@ -37,9 +38,14 @@ func EndToEndTest(name string, t *testing.T, body func(page *agouti.Page)) {
 	Expect(agoutiDriver.Stop()).To(Succeed())
 }
 
-var Given = func(description string, body func()) {
-	body()
+var wrapper = func(name string) func(string, func()) {
+	return func(description string, body func()) {
+		fmt.Println(name, description)
+		body()
+	}
 }
-var When = Given
-var Then = Given
-var And = Given
+
+var Given = wrapper("Given")
+var When = wrapper("When")
+var Then = wrapper("Then")
+var And = wrapper("And")

@@ -36,7 +36,7 @@ func TestRegistrationsController(t *testing.T) {
 			email = fake.Email()
 			password = fake.Characters(10)
 			sessionRepo = doubles.NewFakeSessionRepository()
-			controller = NewRegistrationsController(authService, &CookieSessionTracker{
+			controller = NewRegistrationsController(doubles.NewFakeView(), authService, &CookieSessionTracker{
 				SessionName:       "test",
 				SessionRepository: sessionRepo,
 				Store:             sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
