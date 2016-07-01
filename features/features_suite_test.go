@@ -2,9 +2,10 @@ package features_test
 
 import (
 	"fmt"
+	"io/ioutil"
 	"jobtracker/app"
-	"jobtracker/app/web"
 
+	log "github.com/Sirupsen/logrus"
 	. "github.com/onsi/gomega"
 
 	"github.com/sclevine/agouti"
@@ -12,14 +13,14 @@ import (
 	"testing"
 )
 
-var testContext = app.Context{
-	Port:    3000,
-	AppRoot: "../",
-	Logger:  web.NilLogger{},
-}
-
 func init() {
-	go app.Start(testContext)
+	logger := log.New()
+	logger.Out = ioutil.Discard
+	go app.Start(app.Context{
+		Port:    3000,
+		AppRoot: "../",
+		Logger:  logger,
+	})
 }
 
 var agoutiDriver *agouti.WebDriver

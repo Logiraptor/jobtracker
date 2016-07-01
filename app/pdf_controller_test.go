@@ -2,19 +2,22 @@ package app
 
 import (
 	"bytes"
+	"io/ioutil"
 	"jobtracker/app/tests/doubles"
-	"jobtracker/app/web"
 	"net/http/httptest"
 	"testing"
 
 	"rsc.io/pdf"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPdfController(t *testing.T) {
+	logger := logrus.New()
+	logger.Out = ioutil.Discard
 	var controller = PdfController{
-		Logger: web.NilLogger{},
+		Logger: logger,
 	}
 	var recorder = httptest.NewRecorder()
 	var request = doubles.NewRequest(t, "GET", "/", nil)

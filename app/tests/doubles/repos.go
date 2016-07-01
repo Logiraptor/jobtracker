@@ -38,8 +38,9 @@ func (f *FakeUserRepository) Store(user models.User) error {
 }
 
 type FakeSessionRepository struct {
-	FindByToken_ func(token string) (*models.User, error)
-	New_         func(user models.User) (string, error)
+	FindByToken_   func(token string) (*models.User, error)
+	DeleteByToken_ func(token string) error
+	New_           func(user models.User) (string, error)
 }
 
 func NewFakeSessionRepository() *FakeSessionRepository {
@@ -52,6 +53,10 @@ func NewFakeSessionRepository() *FakeSessionRepository {
 			}
 			return &user, nil
 		},
+		DeleteByToken_: func(token string) error {
+			delete(sessions, token)
+			return nil
+		},
 		New_: func(user models.User) (string, error) {
 			token := strconv.Itoa(len(sessions))
 			sessions[token] = user
@@ -62,6 +67,10 @@ func NewFakeSessionRepository() *FakeSessionRepository {
 
 func (f *FakeSessionRepository) FindByToken(token string) (*models.User, error) {
 	return f.FindByToken_(token)
+}
+
+func (f *FakeSessionRepository) DeleteByToken(token string) error {
+	return f.DeleteByToken_(token)
 }
 
 func (f *FakeSessionRepository) New(user models.User) (string, error) {

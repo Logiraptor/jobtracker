@@ -60,6 +60,13 @@ func (p PSQLSessionRepo) FindByToken(token string) (*models.User, error) {
 	return &user, nil
 }
 
+func (p PSQLSessionRepo) DeleteByToken(token string) error {
+	_, err := p.DB.Exec(`
+	DELETE FROM sessions WHERE token = $1
+	`, token)
+	return err
+}
+
 // User has to exist in the database
 func (p PSQLSessionRepo) New(user models.User) (string, error) {
 	var buf [64]byte

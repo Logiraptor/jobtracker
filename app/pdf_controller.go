@@ -2,18 +2,19 @@ package app
 
 import (
 	"io"
-	"jobtracker/app/web"
 	"net/http"
 	"os/exec"
+
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/gorilla/mux"
 )
 
 type PdfController struct {
-	web.Logger
+	*log.Logger
 }
 
-func NewPdfController(logger web.Logger) PdfController {
+func NewPdfController(logger *log.Logger) PdfController {
 	return PdfController{
 		Logger: logger,
 	}

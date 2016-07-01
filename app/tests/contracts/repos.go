@@ -38,6 +38,7 @@ func UserRepo(t *testing.T, repo UserRepository) {
 
 type SessionRepository interface {
 	FindByToken(token string) (*models.User, error)
+	DeleteByToken(token string) error
 	New(models.User) (string, error)
 }
 
@@ -63,5 +64,12 @@ func SessionRepo(t *testing.T, users UserRepository, repo SessionRepository) {
 		u, err := repo.FindByToken(session)
 		assert.NoError(t, err)
 		assert.Equal(t, user, *u)
+
+		err = repo.DeleteByToken(session)
+		assert.NoError(t, err)
+
+		u, err = repo.FindByToken(session)
+		assert.Error(t, err)
+		assert.Nil(t, u)
 	}
 }

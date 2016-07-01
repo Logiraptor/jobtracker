@@ -21,7 +21,9 @@ func TestSignUpOutAndIn(t *testing.T) {
 
 		When("I sign up", func() {
 			page.FindByLink("Sign Up").Click()
-
+			Eventually(func() *agouti.Selection {
+				return page.FindByButton("Sign Up")
+			}).Should(BeFound())
 			page.FindByLabel("Email").SendKeys(email)
 			page.FindByLabel("Password").SendKeys(password)
 			page.FindByLabel("Current Password").SendKeys(password)
@@ -29,25 +31,31 @@ func TestSignUpOutAndIn(t *testing.T) {
 		})
 
 		Then("I see my email", func() {
-			Expect(page.Find("body")).To(MatchText(regexp.QuoteMeta(email)))
+			Eventually(func() *agouti.Selection {
+				return page.Find("body")
+			}).Should(MatchText(regexp.QuoteMeta(email)))
 		})
 
 		When("I log out", func() {
-			page.FindByLink("Log Out").Click()
+			page.FindByLink("Sign Out").Click()
 		})
 
 		Then("I don't see my email", func() {
-			Expect(page.Find("body")).NotTo(MatchText(regexp.QuoteMeta(email)))
+			Eventually(func() *agouti.Selection {
+				return page.Find("body")
+			}).ShouldNot(MatchText(regexp.QuoteMeta(email)))
 		})
 
 		When("I sign in", func() {
 			page.FindByLabel("Email").SendKeys(email)
 			page.FindByLabel("Password").SendKeys(password)
-			page.FindByButton("Log In").Click()
+			page.FindByButton("Sign In").Click()
 		})
 
 		Then("I see my email", func() {
-			Expect(page.Find("body")).To(MatchText(regexp.QuoteMeta(email)))
+			Eventually(func() *agouti.Selection {
+				return page.Find("body")
+			}).Should(MatchText(regexp.QuoteMeta(email)))
 		})
 	})
 }

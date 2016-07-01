@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/hex"
 	"html/template"
 	"jobtracker/app/authentication"
 	"jobtracker/app/web"
@@ -8,8 +9,9 @@ import (
 	"path/filepath"
 	"strconv"
 
+	log "github.com/Sirupsen/logrus"
+
 	"github.com/gorilla/mux"
-	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 
 	_ "github.com/lib/pq"
@@ -18,7 +20,7 @@ import (
 )
 
 type Context struct {
-	Logger  web.Logger
+	Logger  *log.Logger
 	AppRoot string
 	Port    int
 }
@@ -34,17 +36,19 @@ func Start(ctx Context) error {
 	}
 
 	var (
-		store = sessions.NewCookieStore(securecookie.GenerateRandomKey(32))
-		tmpls = template.Must(template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html")))
-		view  = web.NewTemplateView(tmpls)
+		authKey, _ = hex.DecodeString("3e408db5b476dcda920383089e765df923e1a7b845ecb30098d41b56228eba3cc81e823200b3ea50d0682ebc8b604ddba72189392b312f7c292b08360349558b")
+		encKey, _  = hex.DecodeString("09d04f2aa1d2bf8103a3b8dc736c76c1a3fe55d9187c25f868cdb486784dabd0")
+		store      = sessions.NewCookieStore(authKey, encKey)
+		tmpls      = template.Must(template.ParseGlob(filepath.Join(ctx.AppRoot, "public/*.html")))
+		view       = web.NewTemplateView(tmpls)
 
 		userRepo                = authentication.NewPSQLUserRepo(db)
 		sessionRepository       = authentication.NewPSQLSessionRepo(db)
 		hasher                  = authentication.NewBCryptPasswordHasher(10)
-		httpSessionTracker      = authentication.NewCookieSessionTracker("jobtracker", store, sessionRepository)
+		httpSessionTracker      = authentication.NewCookieSessionTracker("jobtracker", ctx.Logger, store, sessionRepository)
 		authService             = authentication.NewPasswordAuthService(hasher, userRepo)
 		registrationsController = authentication.NewRegistrationsController(view, authService, httpSessionTracker)
-		sessionsController      = authentication.NewSessionsController(authService, httpSessionTracker)
+		sessionsController      = authentication.NewSessionsController(ctx.Logger, authService, httpSessionTracker)
 
 		pdfController       = NewPdfController(ctx.Logger)
 		dashboardController = NewDashboardController(view, httpSessionTracker)
@@ -62,6 +66,6 @@ func Start(ctx Context) error {
 		c.Register(router)
 	}
 
-	ctx.Logger.Log("App started on port: %d", ctx.Port)
-	return http.ListenAndServe(":"+strconv.Itoa(ctx.Port), router)
+	ctx.Logger.WithField("port", ctx.Port).Print("App started")
+	return http.ListenAndServe(":"+strconv.Itoa(ctx.Port), web.LoggerMiddleware(ctx.Logger, router))
 }

@@ -1,14 +1,21 @@
 <html>
 	<body>
-		Welcome to Job Tracker, {{with .}}{{.Email}}{{end}}
+		Welcome to Job Tracker, {{with .}}
 
-		<form action="/login" method="post">
+			{{.Email}}
+
+		<a href="/sign_out">Sign Out</a>
+
+		{{else}}
+
+		<form action="/sign_in" method="post">
 			<label>Email<input type="text" name="email"></label>
 			<label>Password<input type="password" name="password"></label>
-			<input type="submit">Sign In</input>
+			<input type="submit" value="Sign In"/>
 		</form>
 
 		<a href="/sign_up">Sign Up</a>
+		{{end}}
 
 		<a href="/pdf"><button>Generate Pdf</button></a>
 	</body>
